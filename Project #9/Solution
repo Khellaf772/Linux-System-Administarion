@@ -1,0 +1,67 @@
+#!/bin/bash
+# Name: Khellaf
+# File: show_them
+# Date: Wed May  4 22:38:56 PDT 2022
+# Disc: a shell script that behaves like the "last" command,
+# and accept the CRN number of a course if passed as an arguments.  
+
+
+#------START------#
+
+if [ $# -gt 0 ]      #this will be executed if there are arguments passed
+then
+	while getopts :f: opt    #defining options (only -f in this case)
+	do
+		case $opt in
+           	  f) arg=$OPTARG;;
+           	  ?) echo "We consider only the option -f";
+		     echo "usage: show_them -f filename "; exit 1;;
+        	esac
+  	done
+        
+        if [ ! -e $arg ] #if the fille passed as an argument doesn't exist, then the code will exit with exit status 1
+	then
+		echo "'$arg' is not a file or directory"
+		echo "usage: -f a_valid_filename"
+		exit 1
+
+ 	elif [ -e $arg ] && [ $# -eq 2 ];       #the case when when a file with -f option passed as arguments 
+  	then
+        	last -f "$arg" | sed '$d'         #sed to delete footers 
+
+
+ 	elif [ -e $arg ] && [[ $3 =~ ^[0-9]+$ ]]        #the case when a file with -f option and crn passed as argumets ($#=3)
+	then
+		names=$(getent group  "c$3" | cut -d: -f4 | tr ',' '\n')      #extracting students' names for a specific crn
+		if [ -z "$names" ];     #if crn doesn't exist
+		then
+			echo "CNR not available or doesn't exist"
+			exit 1
+		else
+ 			for p in $names; do last -f $arg $p | sed '$d'; done
+		fi
+
+
+	elif [[ $1 =~ ^[0-9]+$ ]]     #the case when only crn passed as argument
+	then
+
+		names=$(getent group  "c$1" | cut -d: -f4 | tr ',' '\n')
+		if [ -z "$names" ];     #if crn doesn't exist
+		then	
+			echo "CNR not available or doesn't exist"
+			exit 1
+		else
+			for i in $names
+			do
+				last "$i" | sed '$d' 
+			done
+		fi
+
+	fi
+
+else                           #the case when there are no arguments passed to the script 
+	last | sed '$d'
+fi
+
+
+#------END------#
