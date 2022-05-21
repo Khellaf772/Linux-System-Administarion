@@ -1,0 +1,79 @@
+#!/bin/bash
+# Name: Khellaf
+# File: course_info 
+# Date: Fri Feb  4 11:21:36 PST 2022
+# Disc: This script is displaying information 
+# about the specific course represented by its CRN number.
+
+
+#------START------#
+nflag=0
+hflag=0
+tflag=0
+aflag=0
+iflag=0
+
+while getopts :n:s:t:a:i:h opts
+do 
+	case $opts in
+	   n) nflag=1; CRN="$OPTARG";;
+	   h) hflag=1; echo "HELP menu:";;
+	   t) tflag=1; CRN=$OPTARG;;
+	   a) aflag=1; CRN=$OPTARG;;
+	   i) iflag=1; CRN=$OPTARG;;
+	   \?) echo "Ivanlid option -$OPTARG"; exit 1
+	esac
+done
+shift $((OPTIND -1))
+
+
+# if the h option is chosen
+if [ "$hflag" -eq 1 ]
+then
+        echo "     usage: course_info option(s) crn_number
+     where options are:
+     -i:  display all student ids
+     -n:  display number of students
+     -t:  display the id of the instructor
+     -a:  display all of the above
+     -h:  display this help"
+	exit 0
+fi
+
+
+# checking if the crn number is not provided or does not exist
+if [ "$CRN" = "" ]
+then
+	echo "usage: course_info option(s) crn_number"
+	exit 1
+elif [ -z `getent group "c"$CRN` ]
+then 
+	echo "CRN does not exist"
+	exit 1
+fi
+
+
+# displaying the number of students' ids, the instructor's id and students' ids 
+if [ "$nflag" -eq 1 ]
+then
+       echo "number of students is: `getent group "c"$CRN | cut -d: -f4 | tr ',' '\n' |sed '1d' | wc -l`"
+	exit 0
+elif [ "$iflag" -eq 1 ]
+then
+	echo "students ids are:"
+	getent group "c"$CRN | cut -d: -f4 | tr ',' '\n' | sed '1d' | sort
+	exit 0
+elif [ "$tflag" -eq 1 ]
+then 	
+	echo "instructor's id is: `getent group "c"$CRN | cut -d: -f4 | cut -d"," -f1`"
+	exit 0
+elif [ "$aflag" -eq 1 ]
+then 
+	echo "All the student login-ids are: "
+	getent group "c"$CRN | cut -d: -f4 | tr ',' '\n' | sed '1d' | sort
+	echo "The number of students is: `getent group "c"$CRN | cut -d: -f4 | tr ',' '\n' | sed '1d' | wc -l`"
+	echo "The login-id of the instructor is: `getent group "c"$CRN | cut -d: -f4 | cut -d"," -f1`"
+	exit 0
+fi
+
+#------END------#
