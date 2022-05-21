@@ -1,0 +1,69 @@
+In this assignment, we are practicing on some aspects of "account management".
+We need to write a shell script called "acct_mgr" to create account for user(s).
+
+This script creates user accounts. The login-ids of the users are provided in
+a separate data file and/or command line. For this assignment, I have provided a file
+called users.lst .
+Your script will create accounts for all of the users in this file.
+
+To avoid any collision, you need to prefix the accounts with your initial.
+For example, if somebody's initial is "jc", then all of the accounts should begin
+with "jc". Something like:  jceagle, jcswan, jchawk, and so forth.
+
+To create accounts, you need to do:
+Our script should accept the following options:
+
+-c    To create account(s)
+-f    The file name containing login-ids
+-p    to provide the initial password for the users
+-h    help menu
+
+examples:
+To create accounts for those users in the users.lst file we do:
+acct_mgr  -c  -f users.lst
+
+To create accounts for those users in the command line we do:
+acct_mgr -c  good bad short long
+The initial password for the accounts is "changeme"
+
+To create accounts for those users in the users.lst and in the command line we do:
+acct_mgr  -c  -f users.lst -p "zoro2434" good bad short long
+The initial password for the accounts is "zoro2434"
+
+To display the help menu we do:
+acct_mgr -h
+
+When you create users accounts, the acct_mgr needs to display the login-ids of
+the newly created users, and their initial passwords on the screen. 
+
+You need to use the copper server. In this server, all of the students are granted
+sudo privilege to create accounts. You can also use your own Unix/Linux computer.
+
+I have created an account for you to let you become a privileged user.  
+the login-id and password is "student", If you login to this account, then you can
+use the commands such as /usr/sbin/useradd, /user/sbin/userdel and so forth.
+Please make sure to use "sudo" in front of your command. For example:
+
+sudo  /user/sbin/adduser  whatever......
+
+
+Please be very careful when you are testing your script in this account. One mistake
+might cause some catastrophic situation in the copper server. 
+
+Your script should also create the initial password for the newly created accounts.
+The initial password by default is "changeme", but the -p option can change this
+initial password. For example:
+
+acct_mgr -c -f users.lst -p orchid23
+
+Attention: When you run your script, there will be no interaction between you and 
+the script. You script WILL NOT ASK YOU TO PROVIDE PASSWORD. 
+The "passwd" is an interactive command. How can we force "passwd" to run in the
+non-interactive mode?
+You need to do the following:
+
+sudo echo "changeme" | passwd jcswan --stdin
+where "changeme" is the password and "jcswan"  is the login-id of the newly created
+user.
+You can also do the following:
+sudo echo "jcswan:changeme" | chpasswd
