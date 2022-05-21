@@ -1,0 +1,32 @@
+
+This homework is in fact the continuation of the previous homework (acct_mgr) .
+In this homework assignment, we would like to add some extra options:
+
+-d   for delete user(s)
+-s   show users
+
+
+examples:
+
+acct_mgr -d good bad pretty
+Will delete good, bad and pretty users.
+
+act_mgr -d -f myfile
+Will delete all of the users whose login-ids are given the file "myfile".
+
+acct_mgr -s 
+will show all of the login-ids of the users.
+Please note that we might also include a regular expression too.
+For example: 
+acct_mgr -s "^m"
+will show all of the login-ids of the users whose login-ids begin with "m" .
+
+acct_mgr -s "^....$"
+will show all of the login-ids of the users whose login-ids consist of 4 characters.
+
+Notes:  when you are removing the user's accounts, please make sure to delete all of
+the user's belongings too (his home directory, files, ...).
+
+This homework assignment is very sensitive. One small mistake might wipe out all of
+the user's accounts, and their belongings. Please be very careful when you are 
+testing your shell script.
