@@ -1,0 +1,27 @@
+In this assignment, we need to do some practice with the /etc/group file on hills.
+We need to write a shell script called "course_info". This script is displaying
+information about the specific course represented by its CRN number.
+
+The script accepts the following options:
+     -i:  displays all student login-ids
+     -n:  displays number of students
+     -t:  displays the login-id of the instructor
+     -a:  displays all of the above
+     -h:  displays the help menu 
+
+For example:
+
+course_info -i  35690
+will display the login-ids of all of the students in the class with the CRN number
+35690 .
+
+course_info -t 43578
+will display the login-ids of the instructor of  the class with the CRN number
+43578 .
+
+
+course_info -n 43432
+will display the number of students in the class represented by the CRN number
+43432 .
+
+If the CRN number does not exist, then an error message will be displayed.
