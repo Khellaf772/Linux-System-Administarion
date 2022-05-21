@@ -1,0 +1,87 @@
+#!/bin/bash
+# Name: Khellaf
+# File: mkfiles 
+# Date: Sat Jan 29 13:41:56 PST 2022
+# Disc: a script that creates any number of files, with any size. 
+
+#-----START-----#
+
+# Setting variables:
+
+size=0
+file_name="noname"
+num_files=1
+help_menu=0
+gen_files=0
+
+while getopts vhs:n:f: options
+do
+	case $options 
+	in
+		s) size=$OPTARG;;
+		n) num_files=$OPTARG;;
+		f) file_name=$OPTARG;;
+		v) gen_files=1;;
+		h) help_menu=1;;
+	esac
+done
+
+
+
+# Displaying the HELP menu when -h is entred
+
+if [ $help_menu -eq 1 ] 
+then
+	echo "
+      ##-- HELP menu --##
+      mkfiles file1 file2 file3 ... 
+      OR
+      mkfiles <options> 
+      options are:
+
+      f)   filename        (default is noname)
+      h)   display this help menu
+      n)   number of files (default is 1)
+      s)   size of files   (default is 0)
+      v)   displays created filenames
+     
+      Examples:
+      
+      mkfiles  
+      mkfiles -h 
+      mkfiles -n 20
+      mkfiles -n 40 -s 100  
+      mkfiles -n 40 -s 100 -f junk  
+      mkfiles -n 40 -s 100 -f junk -v 
+      mkfiles myfile hisfile herfile ourfile
+						"
+fi
+
+num=$num_files
+while [ "$num_files" -gt 0 ]
+do	
+	file="$file_name""$num_files"
+	> "$file"
+	truncate -s "$size" "$file"
+	((num_files-=1))
+done
+
+# Displaying the generated files
+
+if [ $gen_files -eq 1 ]
+then 
+	ls -lt | tail -n +2 | head -$num
+fi
+
+# if only filenames are entred 
+
+if [ $# -gt 1 -a $OPTIND -eq 1 ]
+then
+	while [ $# -gt 0 ]
+	do
+		> "$1"
+		shift
+	done
+fi
+
+#-----END-----#
