@@ -1,0 +1,21 @@
+
+
+Write a shell script to behave like the "last" command, but it should also accept
+the CRN number of a course. 
+If the CRN is used, then our script will show the latest login/logoff activity
+of all of the students in that class.
+For example:
+
+show_them 30821
+
+would display the latest login/logoff activities of the students in our CS260A
+class.
+
+In the above example, I assumed the name of our shell script is "show_them".
+
+Some other examples:
+
+show_them        is equivalent to:  last
+show_them -f /var/run/utmp     is equivalent to:   last -f /var/run/utmp
+show_them -f /var/run/utmp   30821   
+
