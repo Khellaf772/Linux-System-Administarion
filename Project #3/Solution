@@ -1,0 +1,116 @@
+#!/bin/bash
+# Name: Khellaf
+# File: acct_mgr
+# Date: Mon Feb 14 23:29:20 PST 2022 
+# Disc: This script creates user accounts.The login-ids of the 
+# users are provided ina separate data file and/or command line.
+
+
+#------START------#
+
+help() {
+	echo "
+	-- HELP MENU --
+
+	You need to use copper server 
+	the script should accept the following options:
+
+	-c    To create account(s)
+	-f    The file name containing login-ids
+	-p    to provide the initial password for the users
+	-h    help menu
+	-d    for delete user(s)
+	-s    show users
+
+	 usage: 
+	 -- To create accounts for those users in the file_name file we do:
+	 acct_mgr  -c  -f file_name
+
+	 -- To create accounts for those users in the command line we do:
+	 acct_mgr -c  good bad short long
+	 The initial password for the accounts is "changeme"
+
+	 -- To create accounts for those users in the file_name file and in the command line we do:
+	 acct_mgr  -c  -f users.lst -p "zoro2434" good bad short long
+	 The initial password for the accounts is "zoro2434"
+
+	 -- To display the help menu we do:
+	 acct_mgr -h
+
+";
+	 exit 0
+}
+
+# setting variables
+ 
+cflag=0
+pflag="changeme"
+hflag=0
+
+n=0  # index of an element 
+
+while getopts f:p:ch opts
+do
+	case $opts in
+	   c) cflag=1; n=$((n+1));;
+	   
+	   f) input=$OPTARG; n=$((n+2));;
+	   
+	   p) pflag=$OPTARG; n=$((n+2));;
+
+	   h) help;;
+	esac
+done
+
+lst_ids=""  #putting all the users ids from a file or command line in lst_ids
+	 
+if [ -e "$input" ] 
+then
+	while read -r line
+	do
+		
+		lst_ids+="$line "
+	done < "$input"
+fi
+
+lst_ids+=${@:$n+1:$#}   #Retrieve $# elements starting at index n
+
+
+if [ $cflag -eq 1 ]
+then
+
+    if [ "$lst_ids" != "" ] 
+	then
+		for id in $lst_ids
+		do	
+			if [ "$id" != "-c" ] || [ "$id" != "-f" ] || [ "$id" != "-p" ]
+			then	
+				sudo /usr/sbin/useradd "ka$id"
+				echo "$pflag" | sudo passwd "ka$id" --stdin #>> /dev/null
+				echo "user account created with user id ka$id and password of $pflag"
+				
+			fi
+		done
+		exit 0
+
+	else
+		echo "usage: error"
+		echo "input the users ids"
+		echo "Tru acct_mgr -h"
+		exit 1
+	fi
+
+
+
+else
+	echo "usage: error" 
+	echo "The option -c needs to be in the beginning of the command line"
+	echo "Try acct_mgr -h"
+	exit 1
+
+
+fi
+
+
+
+#------END------#
