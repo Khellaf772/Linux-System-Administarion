@@ -1,0 +1,29 @@
+
+1) We would like to archive and compress all of the files that are larger than
+   5 meg. After making the archive, those files need to be removed from the 
+   system, and the archive needs to be moved to the flash memory that is already
+   attached to our /media/TOSHIBA7.4 folder.
+   For your information, moving a file to your flash memory can be simply done
+   by:
+   mv  your_file /media/TOSHIBA7.4/
+
+Answer 1)
+
+for name in `find / -type f -size +5M`;
+do
+        tar -rvf archive.tar $name
+        rm $name
+done
+
+gzip archive.tar
+mv archive.tar.gz /media/TOSHIBA7.4/
+
+
+2) Please show how to empty the entire /tmp directory after reboot.
+   NOTE: you need to use the cron facility to do this task.
+
+Answer 2)
+
+crontab -e
+
+@reboot rm -rf ~/tmp/*
