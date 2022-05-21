@@ -1,0 +1,86 @@
+1) Create an account called temp_empl. This account should be expired on 5/15/28 .
+
+$sudo useradd -e 2028-05-15 temp_empl
+
+2) How would you lock all of those user's accounts which are using ksh?
+
+   We can use the usermod command with the -L option to lock the account 
+   for i in $(getent passwd | grep ksh$ | cut -d: -f1); do
+      sudo usermod -L $i 
+   done
+
+   OR 
+
+   for i in $(getent passwd | grep "/ksh$" | cut -d: -f1); do
+      sudo passwd -l $i
+    done
+
+3) What does the following line do in /etc/sudoers ? 
+
+   wall  wall = (wall) /bin/wall
+
+This gives the user "wall" the ability to run the wall command on the wall host 
+as user wall.
+
+4) The default shell for any newly created user's account is /bin/bash . How
+   would you change it to /bin/ksh ? 
+   To change the default shell we can edit the configuration file at 
+	/etc/default/useradd
+	and specify SHELL=/bin/ksh
+
+   OR
+
+   useradd -D -s /bin/ksh
+
+   so the default shell for newly created users is set to /bin/skh
+
+	
+5) What does the following command do?
+
+    chage  -d  0  jlin
+	
+   It forces the user "jlin" to change his password next time that he logs in.	
+
+6) Please show how to count number of crontab files on your system.
+
+   $sudo ls /var/spool/cron/crontabs/ | wc -l
+
+7) Without using /etc/cron.deny, please show how would you allow everybody to
+   use the cron facility on your system.
+   One way could be to 
+   delete the cron.allow file if it exists 
+   sudo rm -f /etc/cron.allow
+   or
+   we can add all the users on the system to the cron.allow file
+   getent passwd | cut -d: -f1 >> /etc/cron.allow
+
+8) What do the following lines do in your crontab file?
+
+   */5  *  *  *  *  cp  /dev/null  /usr/master_file
+   0  *  *  *  *   /usr/cleanup
+
+1. Erase the contents of /usr/master_file every five minutes.
+2. Run the contents of /usr/cleanup every hour.
+
+
+9) Please create an account for alex with the user-id of 850  and /bin/csh shell.
+
+	
+   $sudo useradd -m -u 850 alex -s /bin/csh
+
+
+10) Please show how to delete those accounts with the uid in the range of 2500-3000.
+   We can filter users with user ids 2500-3000 and then for each user execute the
+   userdel command with the -r option to remove their home directories.
+
+	users=$(getent passwd | cut -d: -f1,3 | grep -E ":[2][5-9][0-9]{2}$|:[3][0]{3}$ | cut -d: -f1")
+	for userName in $users; do sudo userdel -r $userName; done;
+   OR
+
+awk -F':' '{ print $1}' /etc/passwd | while read line; do
+  uid=$(id -u "$line")
+  if [[ $uid -ge 2500 && $uid -le 3000 ]]; then
+    userdel -r "$line"
+  fi
+done
+
