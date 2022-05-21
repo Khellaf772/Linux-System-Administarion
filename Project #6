@@ -1,0 +1,52 @@
+
+   
+   1) We would like to let those users whose login-ids consist of only 2
+      letters and are using bash to use the cron facility.
+      Please show how would you do that. (5 points)
+
+   Answer 1)
+      I would do that by adding those users to cron.allow file (or delete them from cron.deny file if     they are already in cron.deny file).
+
+      >> getent passwd | grep "/bash$" | cut -d: -f1 | grep "^..$" >> /etc/cron.allow
+
+______________________________________________________________
+
+
+   2) In the crontab file, please explain the meaning of the following records:
+      (5 points)
+
+      1  1  1  1  1  cleanup.sh
+      */2 * * * *    cleanup.sh
+
+   Answer 2)
+      1  1  1  1  1  cleanup.sh >> The script cleanup.sh will run on Monday, January 1st at 01:01am
+      */2 * * * *    cleanup.sh >> The script cleanup.sh will run every 2 minutes 
+
+_______________________________________________________________
+
+
+   3) What is an appropriate name for the following function? (5 points)
+
+
+      ?????()
+      {
+         getent  passwd | nl | tail -1 | awk  '{print $1}'
+      }
+
+   Answer 3)
+      The appropriate name for the function is print_line_number
+
+_______________________________________________________________
+
+
+   4) Please show how to remove the crontabs of all your users whose login-ids
+      begins with the letter 'd'. Please note that we have used cron.allow to
+      activate the crontab facility for those users.   (5 points).
+
+   Answer 4)
+      for user in `cat cron.allow | grep "^d"`
+      do
+	   sudo crontab -u $user -r
+      done
+
+  
