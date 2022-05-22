@@ -1,2 +1,2 @@
-# Pro-Linux-System-Administarion-
-Some projects for Linux System Administarion
+# Pro-Linux-System-Administration-
+Some projects for Linux System Administration
